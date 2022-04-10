@@ -66,7 +66,7 @@ func Query(req *models.ParsedQueryRequest) (*models.QueryResponse, error) {
 		struct {
 			Key   string "json:\"key\""
 			Value string "json:\"value\""
-		}{Key: "country", Value: reqCountry.Name})
+		}{Key: models.Country, Value: reqCountry.Name})
 
 	if req.Device == "" {
 
@@ -75,7 +75,7 @@ func Query(req *models.ParsedQueryRequest) (*models.QueryResponse, error) {
 				struct {
 					Key   string "json:\"key\""
 					Value int64  "json:\"value\""
-				}{Key: "webreq", Value: reqCountry.WebRequest},
+				}{Key: models.Webreq, Value: reqCountry.WebRequest},
 			)
 		}
 		if reqCountry.TimeSpent != 0 {
@@ -83,7 +83,7 @@ func Query(req *models.ParsedQueryRequest) (*models.QueryResponse, error) {
 				struct {
 					Key   string "json:\"key\""
 					Value int64  "json:\"value\""
-				}{Key: "timespent", Value: reqCountry.TimeSpent},
+				}{Key: models.Timespent, Value: reqCountry.TimeSpent},
 			)
 		}
 
@@ -100,7 +100,7 @@ func Query(req *models.ParsedQueryRequest) (*models.QueryResponse, error) {
 		struct {
 			Key   string "json:\"key\""
 			Value string "json:\"value\""
-		}{Key: "device", Value: d.Name})
+		}{Key: models.Device, Value: d.Name})
 
 	if d.WebRequest != 0 {
 		response.Metrics = append(response.Metrics,
@@ -108,7 +108,7 @@ func Query(req *models.ParsedQueryRequest) (*models.QueryResponse, error) {
 				Key   string "json:\"key\""
 				Value int64  "json:\"value\""
 			}{
-				Key:   "webreq",
+				Key:   models.Webreq,
 				Value: d.WebRequest,
 			},
 		)
@@ -119,7 +119,7 @@ func Query(req *models.ParsedQueryRequest) (*models.QueryResponse, error) {
 				Key   string "json:\"key\""
 				Value int64  "json:\"value\""
 			}{
-				Key:   "timespent",
+				Key:   models.Timespent,
 				Value: d.TimeSpent,
 			},
 		)

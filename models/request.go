@@ -22,19 +22,21 @@ func (req *InsertRequest) ParseInsertRequest() ParsedInsertRequest {
 	var parsedRequest ParsedInsertRequest
 
 	for _, v := range req.Dim {
-		if v.Key == "country" {
+		if v.Key == Country {
 			parsedRequest.Country = v.Value
-		} else if v.Key == "device" {
+		} else if v.Key == Device {
 			parsedRequest.Device = v.Value
 		}
 	}
+	parsedRequest.TimeSpent = 0
+	parsedRequest.WebRequest = 0
 
 	for _, v := range req.Metrics {
 
-		if v.Key == "webreq" {
-			parsedRequest.WebRequest = v.Value
-		} else if v.Key == "timespent" {
-			parsedRequest.TimeSpent = v.Value
+		if v.Key == Webreq {
+			parsedRequest.WebRequest += v.Value
+		} else if v.Key == Timespent {
+			parsedRequest.TimeSpent += v.Value
 		}
 	}
 
@@ -69,11 +71,11 @@ func (req *QueryRequest) ParseQueryRequest() ParsedQueryRequest {
 	var parsedRequest ParsedQueryRequest
 
 	for _, v := range req.Dim {
-		if v.Key == "country" {
+		if v.Key == Country {
 			parsedRequest.Country = v.Value
 		}
 
-		if v.Key == "device" {
+		if v.Key == Device {
 			parsedRequest.Device = v.Value
 		}
 	}
