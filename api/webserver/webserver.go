@@ -29,6 +29,7 @@ func NewWebserver(config *config.Config) *WebServer {
 }
 
 func (w *WebServer) StartServer() error {
+
 	log.Println("starting server at: ", w.Address)
 
 	err := http.ListenAndServe(w.Address, w.Router)

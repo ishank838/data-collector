@@ -20,9 +20,10 @@ func Insert(w http.ResponseWriter, r *http.Request) {
 	}
 
 	paresedReq := request.ParseInsertRequest()
-	log.Println(paresedReq)
 
-	datatree.Insert(paresedReq)
+	t := datatree.GetTree()
+
+	t.Insert(paresedReq)
 
 	w.WriteHeader(http.StatusOK)
 }
@@ -39,7 +40,9 @@ func Query(w http.ResponseWriter, r *http.Request) {
 
 	parsedReq := request.ParseQueryRequest()
 
-	resp, err := datatree.Query(&parsedReq)
+	t := datatree.GetTree()
+
+	resp, err := t.Query(&parsedReq)
 
 	if err != nil {
 		log.Println(err)

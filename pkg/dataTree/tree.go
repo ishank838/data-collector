@@ -6,25 +6,35 @@ import (
 	"github.com/ishank838/data-collection/models"
 )
 
-var Root = initRoot()
+type Tree struct {
+	Root *Node
+}
 
-func initRoot() *Node {
-	return &Node{
+var treeInstance = InitRoot()
+
+func GetTree() *Tree {
+	return treeInstance
+}
+
+func InitRoot() *Tree {
+	node := &Node{
 		Type:       RootType,
 		Name:       "root",
 		Children:   make(map[string]*Node),
 		TimeSpent:  0,
 		WebRequest: 0,
 	}
+
+	return &Tree{Root: node}
 }
 
-func Insert(req models.ParsedInsertRequest) {
+func (t *Tree) Insert(req models.ParsedInsertRequest) {
 
 	//update root metrics
-	UpdateMetrics(Root, req.WebRequest, req.TimeSpent)
+	UpdateMetrics(t.Root, req.WebRequest, req.TimeSpent)
 
 	//update country metrics
-	countries := Root.Children
+	countries := t.Root.Children
 	reqCountry, ok := countries[req.Country]
 
 	if !ok {
@@ -51,9 +61,9 @@ func Insert(req models.ParsedInsertRequest) {
 	}
 }
 
-func Query(req *models.ParsedQueryRequest) (*models.QueryResponse, error) {
+func (t *Tree) Query(req *models.ParsedQueryRequest) (*models.QueryResponse, error) {
 
-	countries := Root.Children
+	countries := t.Root.Children
 
 	reqCountry, ok := countries[req.Country]
 	if !ok {
