@@ -20,7 +20,7 @@ type WebServer struct {
 func NewWebserver(config *config.Config) *WebServer {
 	routes := routes.GetAllRoutes()
 	router := router.NewRouter(config, routes)
-	address := fmt.Sprintf("localhost:%v", config.WebPort)
+	address := fmt.Sprintf(":%v", config.WebPort)
 	return &WebServer{
 		Router:  router,
 		Routes:  routes,
