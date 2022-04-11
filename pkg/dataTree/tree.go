@@ -2,12 +2,14 @@ package datatree
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/ishank838/data-collection/models"
 )
 
 type Tree struct {
-	Root *Node
+	Root  *Node
+	Mutex sync.Mutex
 }
 
 var treeInstance = InitRoot()
@@ -30,8 +32,11 @@ func InitRoot() *Tree {
 
 func (t *Tree) Insert(req models.ParsedInsertRequest) {
 
+	var updateNodes []*Node
+
 	//update root metrics
-	UpdateMetrics(t.Root, req.WebRequest, req.TimeSpent)
+	updateNodes = append(updateNodes, t.Root)
+	//UpdateMetrics(t.Root, req.WebRequest, req.TimeSpent)
 
 	//update country metrics
 	countries := t.Root.Children
@@ -40,10 +45,12 @@ func (t *Tree) Insert(req models.ParsedInsertRequest) {
 	if !ok {
 		node := NewNode(CountryType)
 		node.Name = req.Country
-		UpdateMetrics(node, req.WebRequest, req.TimeSpent)
+		updateNodes = append(updateNodes, node)
+		//UpdateMetrics(node, req.WebRequest, req.TimeSpent)
 		countries[req.Country] = node
 	} else {
-		UpdateMetrics(reqCountry, req.WebRequest, req.TimeSpent)
+		updateNodes = append(updateNodes, reqCountry)
+		//UpdateMetrics(reqCountry, req.WebRequest, req.TimeSpent)
 	}
 
 	//update device metrics
@@ -54,11 +61,16 @@ func (t *Tree) Insert(req models.ParsedInsertRequest) {
 	if !ok {
 		node := NewNode(DeviceType)
 		node.Name = req.Device
-		UpdateMetrics(node, req.WebRequest, req.TimeSpent)
+		updateNodes = append(updateNodes, node)
+		//UpdateMetrics(node, req.WebRequest, req.TimeSpent)
 		devices.Children[req.Device] = node
 	} else {
-		UpdateMetrics(reqDevice, req.WebRequest, req.TimeSpent)
+		updateNodes = append(updateNodes, reqDevice)
+
+		//UpdateMetrics(reqDevice, req.WebRequest, req.TimeSpent)
 	}
+
+	t.UpdateMetrics(updateNodes, req.WebRequest, req.TimeSpent)
 }
 
 func (t *Tree) Query(req *models.ParsedQueryRequest) (*models.QueryResponse, error) {
@@ -138,7 +150,12 @@ func (t *Tree) Query(req *models.ParsedQueryRequest) (*models.QueryResponse, err
 	return &response, nil
 }
 
-func UpdateMetrics(node *Node, webReq int64, timeSpent int64) {
-	node.TimeSpent += timeSpent
-	node.WebRequest += webReq
+func (t *Tree) UpdateMetrics(nodes []*Node, webReq int64, timeSpent int64) {
+
+	t.Mutex.Lock()
+	defer t.Mutex.Unlock()
+	for _, node := range nodes {
+		node.TimeSpent += timeSpent
+		node.WebRequest += webReq
+	}
 }

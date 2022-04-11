@@ -23,7 +23,7 @@ func Insert(w http.ResponseWriter, r *http.Request) {
 
 	t := datatree.GetTree()
 
-	t.Insert(paresedReq)
+	go t.Insert(paresedReq)
 
 	w.WriteHeader(http.StatusOK)
 }
