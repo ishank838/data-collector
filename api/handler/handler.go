@@ -20,7 +20,7 @@ func Insert(w http.ResponseWriter, r *http.Request) {
 
 	paresedReq := request.ParseInsertRequest()
 
-	if paresedReq.Country == "" || paresedReq.Device == "" || paresedReq.TimeSpent == 0 || paresedReq.WebRequest == 0 {
+	if paresedReq.Country == "" || paresedReq.Device == "" || (paresedReq.TimeSpent == 0 && paresedReq.WebRequest == 0) {
 		w.WriteHeader(http.StatusBadRequest)
 		msg := map[string]string{
 			"status": http.StatusText(http.StatusBadRequest),
@@ -66,7 +66,7 @@ func Query(w http.ResponseWriter, r *http.Request) {
 	resp, err := t.Query(&parsedReq)
 
 	if err != nil {
-		//log.Println(err)
+
 		w.WriteHeader(http.StatusBadRequest)
 		msg := map[string]string{
 			"status": http.StatusText(http.StatusBadRequest),

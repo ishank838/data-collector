@@ -30,12 +30,12 @@ func NewWebserver(config *config.Config) *WebServer {
 
 func (w *WebServer) StartServer() error {
 
-	log.Println("starting server at: ", w.Address)
+	log.Println("starting server at port: ", w.Address)
 
 	err := http.ListenAndServe(w.Address, w.Router)
 
 	if err != nil {
-		return fmt.Errorf("error at startserver: %v", err)
+		return fmt.Errorf("error at start server: %v", err)
 	}
 
 	return nil

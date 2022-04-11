@@ -154,6 +154,7 @@ func (t *Tree) UpdateMetrics(nodes []*Node, webReq int64, timeSpent int64) {
 
 	t.Mutex.Lock()
 	defer t.Mutex.Unlock()
+
 	for _, node := range nodes {
 		node.TimeSpent += timeSpent
 		node.WebRequest += webReq
